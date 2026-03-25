@@ -1,9 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
 
+// --- Interfaces ---
+
+interface CoursePopupProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+interface MyAccountProps {
+  isLoggedIn: boolean;
+  onLogin: () => void;
+}
+
+interface LayoutProps {
+  children: React.ReactNode;
+}
+
+interface FAQItem {
+  q: string;
+  a: string;
+}
+
+interface EventItem {
+  date: string;
+  title: string;
+  type: string;
+  time: string;
+}
+
 // --- Components ---
 
-const ScrollToTop = () => {
+const ScrollToTop: React.FC = () => {
   const { pathname } = useLocation();
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -11,9 +39,14 @@ const ScrollToTop = () => {
   return null;
 };
 
-const CoursePopup = ({ isOpen, onClose }) => {
-  const [courseRegistered, setCourseRegistered] = useState(false);
+const CoursePopup: React.FC<CoursePopupProps> = ({ isOpen, onClose }) => {
+  const [courseRegistered, setCourseRegistered] = useState<boolean>(false);
   if (!isOpen) return null;
+
+  const handleRegistrationSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setCourseRegistered(true);
+  };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6 backdrop-blur-2xl bg-brand-dark/40 overflow-y-auto">
@@ -26,7 +59,7 @@ const CoursePopup = ({ isOpen, onClose }) => {
         {!courseRegistered ? (
           <div className="text-center">
             <h3 className="text-3xl md:text-4xl font-bold mb-8 md:10 italic">Join Online Course</h3>
-            <form onSubmit={(e) => { e.preventDefault(); setCourseRegistered(true); }} className="space-y-6 md:space-y-8 text-left">
+            <form onSubmit={handleRegistrationSubmit} className="space-y-6 md:space-y-8 text-left">
               <div className="space-y-2">
                 <label className="text-xs uppercase tracking-widest opacity-40 font-bold">Name</label>
                 <input required type="text" className="w-full border-b-2 border-brand-dark/10 py-3 md:py-4 focus:outline-none focus:border-brand-magenta transition-all font-medium" />
@@ -46,7 +79,7 @@ const CoursePopup = ({ isOpen, onClose }) => {
             <h3 className="text-2xl md:text-3xl font-bold mb-4 md:mb-6 italic leading-tight">Congratulations! You now have 3 days access to SOURCE.</h3>
             <p className="text-base md:text-lg opacity-60 mb-8 md:mb-10 leading-relaxed font-medium">You will receive instructions in your inbox in a few minutes.</p>
             <div className="p-6 md:p-8 bg-[#F9FBF2] rounded-2xl mb-8">
-              <p className="text-xs font-bold uppercase tracking-widest opacity-40 mb-4 italic">But first, please watch this personal message from Sascha →</p>
+              <p className="text-sm font-bold uppercase tracking-widest opacity-40 mb-4 italic">But first, please watch this personal message from Sascha →</p>
               <div className="aspect-video bg-brand-dark/5 rounded-xl flex items-center justify-center relative">
                 <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80" alt="Video Placeholder" className="w-full h-full object-cover opacity-60 rounded-xl" />
                 <div className="absolute w-12 h-12 md:w-16 md:h-16 bg-white/80 rounded-full flex items-center justify-center shadow-2xl cursor-pointer hover:scale-110 transition-transform">
@@ -67,9 +100,9 @@ const CoursePopup = ({ isOpen, onClose }) => {
 
 // --- Pages ---
 
-const Home = () => {
-  const [showCoursePopup, setShowCoursePopup] = useState(false);
-  const faqs = [
+const Home: React.FC = () => {
+  const [showCoursePopup, setShowCoursePopup] = useState<boolean>(false);
+  const faqs: FAQItem[] = [
     { q: "What is the price?", a: "The pricing for the community memberships is found here." },
     { q: "When does the community start?", a: "The community has already begun. You can join today!" },
     { q: "I haven't done anything like this before. Is it suitable for complete beginners?", a: "Yes, this community brings a unique take on shadow work, merging somatics, non-dualism and various other modalities..." },
@@ -222,7 +255,7 @@ const Home = () => {
           </div>
           <div className="flex items-center gap-4 md:gap-6 mb-8 md:mb-10">
             <div className="w-10 h-10 md:w-12 md:h-12 bg-brand-green/30 rounded-full shadow-inner"></div>
-            <h3 className="text-3xl md:text-5xl font-bold">Agency Cycle</h3>
+            <h3 className="text-4xl md:text-5xl font-bold">Agency Cycle</h3>
           </div>
           <ul className="space-y-3 text-lg md:text-xl opacity-80 mb-10 md:mb-12 font-medium">
             <li>Description of the process and the goals</li>
@@ -285,12 +318,12 @@ const Home = () => {
   );
 };
 
-const MyAccount = ({ isLoggedIn, onLogin }) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+const MyAccount: React.FC<MyAccountProps> = ({ isLoggedIn, onLogin }) => {
+  const [username, setUsername] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [error, setError] = useState<string>('');
 
-  const handleLogin = (e) => {
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (username === 'source' && password === '123') {
       onLogin();
@@ -384,8 +417,8 @@ const MyAccount = ({ isLoggedIn, onLogin }) => {
   );
 };
 
-const CalendarEvents = () => {
-  const events = [
+const CalendarEvents: React.FC = () => {
+  const events: EventItem[] = [
     { date: "MAR 28", title: "Live Somatic Workshop", type: "Zoom Session", time: "18:00 GMT" },
     { date: "APR 05", title: "Agency Cycle Kickoff", type: "English Group", time: "19:30 GMT" },
     { date: "APR 12", title: "Money Money Masterclass", type: "Workshop", time: "17:00 GMT" }
@@ -412,7 +445,7 @@ const CalendarEvents = () => {
   );
 };
 
-const Feedback = () => {
+const Feedback: React.FC = () => {
   return (
     <div className="min-h-screen py-24 md:py-40 px-6 md:px-10 bg-white">
       <div className="max-w-4xl mx-auto text-center">
@@ -439,11 +472,10 @@ const Feedback = () => {
   );
 };
 
-const Layout = ({ children }) => {
-  const navigate = useNavigate();
+const Layout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
 
-  const handleLogoClick = (e) => {
+  const handleLogoClick = (e: React.MouseEvent) => {
     if (location.pathname === '/') {
       e.preventDefault();
       window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -487,7 +519,7 @@ const Layout = ({ children }) => {
 };
 
 const App: React.FC = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   return (
     <Router>
