@@ -1,37 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
 
-// --- Interfaces ---
-
-interface CoursePopupProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-interface MyAccountProps {
-  isLoggedIn: boolean;
-  onLogin: () => void;
-}
-
-interface LayoutProps {
-  children: React.ReactNode;
-}
-
-interface FAQItem {
-  q: string;
-  a: string;
-}
-
-interface EventItem {
-  date: string;
-  title: string;
-  type: string;
-  time: string;
-}
-
 // --- Components ---
 
-const ScrollToTop: React.FC = () => {
+const ScrollToTop = () => {
   const { pathname } = useLocation();
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -39,11 +11,11 @@ const ScrollToTop: React.FC = () => {
   return null;
 };
 
-const CoursePopup: React.FC<CoursePopupProps> = ({ isOpen, onClose }) => {
-  const [courseRegistered, setCourseRegistered] = useState<boolean>(false);
+const CoursePopup = ({ isOpen, onClose }) => {
+  const [courseRegistered, setCourseRegistered] = useState(false);
   if (!isOpen) return null;
 
-  const handleRegistrationSubmit = (e: React.FormEvent) => {
+  const handleRegistrationSubmit = (e) => {
     e.preventDefault();
     setCourseRegistered(true);
   };
@@ -91,9 +63,9 @@ const CoursePopup: React.FC<CoursePopupProps> = ({ isOpen, onClose }) => {
 
 // --- Pages ---
 
-const Home: React.FC = () => {
-  const [showCoursePopup, setShowCoursePopup] = useState<boolean>(false);
-  const faqs: FAQItem[] = [
+const Home = () => {
+  const [showCoursePopup, setShowCoursePopup] = useState(false);
+  const faqs = [
     { q: "What is the price?", a: "The pricing for the community memberships is found here." },
     { q: "When does the community start?", a: "The community has already begun. You can join today!" }
   ];
@@ -129,12 +101,12 @@ const Home: React.FC = () => {
   );
 };
 
-const MyAccount: React.FC<MyAccountProps> = ({ isLoggedIn, onLogin }) => {
-  const [username, setUsername] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [error, setError] = useState<string>('');
+const MyAccount = ({ isLoggedIn, onLogin }) => {
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = (e) => {
     e.preventDefault();
     if (username === 'source' && password === '123') {
       onLogin();
@@ -168,8 +140,8 @@ const MyAccount: React.FC<MyAccountProps> = ({ isLoggedIn, onLogin }) => {
   );
 };
 
-const CalendarEvents: React.FC = () => {
-  const events: EventItem[] = [
+const CalendarEvents = () => {
+  const events = [
     { date: "MAR 28", title: "Live Somatic Workshop", type: "Zoom Session", time: "18:00 GMT" },
     { date: "APR 05", title: "Agency Cycle Kickoff", type: "English Group", time: "19:30 GMT" }
   ];
@@ -195,7 +167,7 @@ const CalendarEvents: React.FC = () => {
   );
 };
 
-const Feedback: React.FC = () => {
+const Feedback = () => {
   return (
     <div className="min-h-screen py-40 px-10 bg-white">
       <div className="max-w-4xl mx-auto text-center">
@@ -214,7 +186,7 @@ const Feedback: React.FC = () => {
 
 // --- Layout & Main App ---
 
-const Layout: React.FC<LayoutProps> = ({ children }) => {
+const Layout = ({ children }) => {
   const navigate = useNavigate();
   return (
     <div className="min-h-screen flex flex-col font-sans text-brand-dark">
@@ -231,8 +203,8 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
   );
 };
 
-const App: React.FC = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+const App = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   return (
     <Router>
